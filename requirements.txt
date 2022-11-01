@@ -1,6 +1,6 @@
 streamlit==1.14.0
 pandas==1.5.1
-datetime==3.10.8
+datetime==4.6
 statistics==3.11.0
 matplotlib.pyplot==3.6.0
 PIL==9.3.0
