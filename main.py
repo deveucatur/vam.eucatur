@@ -5,7 +5,7 @@ import statistics
 import matplotlib.pyplot as plt
 from PIL import Image
 import requests
-from beautifulsoup4 import BeautifulSoup
+from bs4 import BeautifulSoup
 
 
 icone = Image.open('icone.png')
