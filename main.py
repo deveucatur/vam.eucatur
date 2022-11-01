@@ -135,6 +135,7 @@ if st.button('Buscar'):
         date += datetime.timedelta(days=1)
         rotaRaiz += r1
     print(lisDatas)
+    
     #dfRaiz = pd.DataFrame(rotaRaiz)
     # row = ["Data",'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"]
     #st.dataframe(dfRaiz, use_container_width=True)
@@ -148,6 +149,8 @@ if st.button('Buscar'):
     #   options_Tipo = st.multiselect('Tipo de transporte', set([x[7] for x in rotaRaiz]), set([x[7] for x in rotaRaiz]))
 
     rota = rotaRaiz
+    df = pd.DataFrame(rota,columns = ["Data",'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"])
+    st.dataframe(df, use_container_width=True)
        # if submitted:
         #    rota = [x for x in rotaRaiz if
         #            x[0] in options_Data
