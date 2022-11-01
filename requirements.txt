@@ -6,4 +6,3 @@ requests==2.28.1
 streamlit==1.14.0
 datetime==4.6
 statistics==3.4.0b3
-BeautifulSoup==3.2.2
