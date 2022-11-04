@@ -1,4 +1,3 @@
-import streamlit as st
 import pandas as pd
 import datetime
 import statistics
@@ -6,7 +5,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import requests
 from bs4 import BeautifulSoup
-
+import streamlit as st
 
 icone = Image.open('icone.png')
 st.set_page_config(
@@ -19,6 +18,8 @@ st.image(image,width=250,)
 
 st.title('VAM - Análise de Concorrência')
 
+
+## FUNÇÕES ## 
 def limpa_str(info_pag):
     valo_limpo = ''
     for values in info_pag:
@@ -107,6 +108,45 @@ def rotas_concorrentes(saida, destino, ano, mes, dia):
 
     return empresas
 
+def plotarGrafComp(rota):
+    d_precxdata = [float(x[2]) for x in rota if x[7] != "Avião" and x[1] != "Eucatur"]
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.boxplot(d_precxdata)
+    if len([float(x[2]) for x in rota if x[1] == "Eucatur"]) > 0:
+        try:
+            d_precxdataEucatur = [float(x[2]) for x in rota if x[1] == "Eucatur"]
+            ax.violinplot(d_precxdataEucatur, widths=0.25)
+            st.markdown("**Eucatur vs Concorrência**")
+        except ValueError:  
+            pass
+    st.pyplot(fig)
+
+def metricasConcorrencia(rota):
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        if len([float(x[2]) for x in rota if x[1] != "Eucatur"]) > 0:
+            st.metric(label="Preço mínimo", value=str(round(min([float(x[2])for x in rota]),2)))
+        if len([float(x[2]) for x in rota if x[1] == "Eucatur"]) > 0:
+            st.metric(label="Preço mínimo Eucatur", value=str(round(min([float(x[2]) for x in rota if x[1] == "Eucatur"]), 2)),delta= str(round(min([float(x[2]) for x in rota if x[1] == "Eucatur"]) - min([float(x[2])for x in rota]) ,2)))
+
+    with col2:
+        if len([float(x[2]) for x in rota if x[1] != "Eucatur"]) > 0:
+            st.metric(label="Preço médio", value=str(round(round(statistics.mean([float(x[2])for x in rota]),2),2)))
+        if len([float(x[2]) for x in rota if x[1] == "Eucatur"]) > 0:
+            st.metric(label="Preço médio Eucatur", value=str(round(statistics.mean([float(x[2]) for x in rota if x[1] == "Eucatur"]), 2)),delta= str(round(statistics.mean([float(x[2]) for x in rota if x[1] == "Eucatur"]) - statistics.mean([float(x[2])for x in rota]) ,2)))
+
+    with col3:
+        if len([float(x[2]) for x in rota if x[1] != "Eucatur"]) > 0:
+            st.metric(label="Preço máximo", value=str(round(max([float(x[2])for x in rota]),2)))
+        if len([float(x[2]) for x in rota if x[1] == "Eucatur"]) > 0:
+            st.metric(label="Preço máximo Eucatur", value=str(round(max([float(x[2]) for x in rota if x[1] == "Eucatur"]), 2)),delta= str(round(max([float(x[2]) for x in rota if x[1] == "Eucatur"]) - max([float(x[2])for x in rota]) ,2)))
+
+def TabelaDados(rota):
+    df = pd.DataFrame(rota, columns=["Data", 'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"])
+    st.dataframe(df, use_container_width=True)
+
+
 
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -135,62 +175,30 @@ if st.button('Buscar'):
         date += datetime.timedelta(days=1)
         rotaRaiz += r1
     print(lisDatas)
-    
-    #dfRaiz = pd.DataFrame(rotaRaiz)
-    # row = ["Data",'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"]
-    #st.dataframe(dfRaiz, use_container_width=True)
 
-    #ith st.form("my_form"):
-    #   submitted = st.form_submit_button("Filtrar")
-    #   options_Data = st.multiselect('Selecione data', set([x[0] for x in rotaRaiz]),set([x[0] for x in rotaRaiz]))
-    #   options_Empresa = st.multiselect('Selecione data', set([x[1] for x in rotaRaiz]), set([[1] for x in rotaRaiz]))
-    #   options_Preco = st.slider('Preço', min([float(x[2]) for x in rotaRaiz]), max([float(x[2]) for x in rotaRaiz]), max([float(x[2]) for x in rotaRaiz]))
-    #   options_Leito = st.multiselect('Tipo de Leito', set([x[5] for x in rotaRaiz]), set([x[5] for x in rotaRaiz]))
-    #   options_Tipo = st.multiselect('Tipo de transporte', set([x[7] for x in rotaRaiz]), set([x[7] for x in rotaRaiz]))
 
     rota = rotaRaiz
-    df = pd.DataFrame(rota,columns = ["Data",'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"])
-    st.dataframe(df, use_container_width=True)
-       # if submitted:
-        #    rota = [x for x in rotaRaiz if
-        #            x[0] in options_Data
-        #            ]
-            #x[1] in and
-            #x[2] in and
-            #x[3] in and
-            #x[4] in and
-            #x[5] in and
-            #x[6] in and
-            #x[7] in and
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric(label="Preço mínimo", value=str(round(min([float(x[2])for x in rota]),2)))
-        st.metric(label="Preço mínimo Eucatur", value=str(round(min([float(x[2]) for x in rota if x[1] == "Eucatur"]), 2)),delta= str(round(min([float(x[2]) for x in rota if x[1] == "Eucatur"]) - min([float(x[2])for x in rota]) ,2)))
-
-    with col2:
-        st.metric(label="Preço médio", value=str(round(round(statistics.mean([float(x[2])for x in rota]),2),2)))
-        st.metric(label="Preço médio Eucatur", value=str(round(statistics.mean([float(x[2]) for x in rota if x[1] == "Eucatur"]), 2)),delta= str(round(statistics.mean([float(x[2]) for x in rota if x[1] == "Eucatur"]) - statistics.mean([float(x[2])for x in rota]) ,2)))
-
-    with col3:
-        st.metric(label="Preço máximo", value=str(round(max([float(x[2])for x in rota]),2)))
-        st.metric(label="Preço máximo Eucatur", value=str(round(max([float(x[2]) for x in rota if x[1] == "Eucatur"]), 2)),delta= str(round(max([float(x[2]) for x in rota if x[1] == "Eucatur"]) - max([float(x[2])for x in rota]) ,2)))
 
     st.header(f"Dados de {lisDatas[0]} até {lisDatas[-1]}")
 
-    df = pd.DataFrame(rota,columns = ["Data",'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"])
-    st.dataframe(df, use_container_width=True)
+    metricasConcorrencia(rota)
+    TabelaDados(rota)
 
     d_precxdata = [[float(y[2]) for y in rota if y[0] == x and y[7] != "Avião" and y[1] != "Eucatur"] for x in lisDatas1]
-    d_precxdataEucatur = [[float(y[2]) for y in rota if y[0] == x and y[1] == "Eucatur"] for x in lisDatas1]
-
 
     fig, ax = plt.subplots(figsize = (10,6))
     ax.boxplot(d_precxdata, labels = lisDatas)
-    ax.violinplot(d_precxdataEucatur,widths = 0.25)
 
-    st.markdown("**Eucatur vs Concorrência**")
+    if len([float(x[2]) for x in rota if x[1] == "Eucatur"]) > 0:
+
+        try:
+            d_precxdataEucatur = [[float(y[2]) for y in rota if y[0] == x and y[1] == "Eucatur"] for x in lisDatas1]
+            print(d_precxdataEucatur)
+            ax.violinplot(d_precxdataEucatur,widths = 0.25)
+            st.markdown("**Eucatur vs Concorrência**")            
+        except ValueError:  
+            pass
+
     st.pyplot(fig)
 
     st.header("Dados por dia ")
@@ -201,44 +209,42 @@ if st.button('Buscar'):
         rota1 = [x for x in rotaRaiz if x[0] == lisDatas1[0]]
         st.header(lisDatas[0])
 
-        df1 = pd.DataFrame(rota1, columns=["Data", 'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"])
-        st.dataframe(df1, use_container_width=True)
+        metricasConcorrencia(rota1)
+        TabelaDados(rota1)
+        plotarGrafComp(rota1)
 
-        #d_precxdata1 = [float(x[2]) for x in rota1 if x[7] != "Avião" and x[1] != "Eucatur"]
-        #d_precxdataEucatur1 = [float(x[2]) for x in rota1 if x[1] == "Eucatur"]
-        #fig1, ax = plt.subplots(figsize=(10, 6))
-        #ax.boxplot(d_precxdata1)
-        #ax.violinplot(d_precxdataEucatur1, widths=0.25)
-        #st.markdown("**Eucatur vs Concorrência**")
-        #st.pyplot(fig1)
 
     with tab2:
         rota2 = [x for x in rotaRaiz if x[0] == lisDatas1[1]]
         st.header(lisDatas[1])
 
-        df2 = pd.DataFrame(rota2, columns=["Data", 'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"])
-        st.dataframe(df2, use_container_width=True)
+        metricasConcorrencia(rota2)
+        TabelaDados(rota2)
+        plotarGrafComp(rota2)
 
     with tab3:
         rota3 = [x for x in rotaRaiz if x[0] == lisDatas1[2]]
         st.header(lisDatas[2])
-
-        df3 = pd.DataFrame(rota3, columns=["Data", 'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"])
-        st.dataframe(df3, use_container_width=True)
+        
+        metricasConcorrencia(rota3)
+        TabelaDados(rota3)
+        plotarGrafComp(rota3)
 
     with tab4:
         rota4 = [x for x in rotaRaiz if x[0] == lisDatas1[3]]
         st.header(lisDatas[3])
 
-        df4 = pd.DataFrame(rota4, columns=["Data", 'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"])
-        st.dataframe(df4, use_container_width=True)
+        metricasConcorrencia(rota4)
+        TabelaDados(rota4)
+        plotarGrafComp(rota4)
 
     with tab5:
         rota5 = [x for x in rotaRaiz if x[0] == lisDatas1[4]]
         st.header(lisDatas[4])
 
-        df5 = pd.DataFrame(rota5, columns=["Data", 'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"])
-        st.dataframe(df5, use_container_width=True)
+        metricasConcorrencia(rota5)
+        TabelaDados(rota5)
+        plotarGrafComp(rota5)
 
 col1, col2, col3 = st.columns(3)
 
