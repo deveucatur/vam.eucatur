@@ -19,7 +19,7 @@ st.image(image,width=250,)
 st.title('VAM - Análise de Concorrência')
 
 
-## FUNÇÕES ## 
+## FUNÇOES ## 
 def limpa_str(info_pag):
     valo_limpo = ''
     for values in info_pag:
@@ -64,7 +64,7 @@ def rotas_concorrentes(saida, destino, ano, mes, dia):
     ender_get = ender.content
     bea = BeautifulSoup(ender_get, 'html.parser')
 
-    # HTML DA PÁGINA
+    # HTML DA PAGINA
     feed = bea.findAll('div', attrs={'class': 'bo-timetable-info'})
 
     empresas = []
@@ -96,11 +96,11 @@ def rotas_concorrentes(saida, destino, ano, mes, dia):
         lista_tempo.append(qtd_leito_limpo)
 
         if empresa.text == "Skyscanner":
-            lista_tempo.append("Avião")
+            lista_tempo.append("Aviao")
         elif empresa.text == "BlaBlaCar":
             lista_tempo.append("Carro")
         else:
-            lista_tempo.append("Ônibus")
+            lista_tempo.append("Onibus")
 
         lista_paramet = lista_tempo.copy()
         empresas.append(lista_paramet)
@@ -109,7 +109,7 @@ def rotas_concorrentes(saida, destino, ano, mes, dia):
     return empresas
 
 def plotarGrafComp(rota):
-    d_precxdata = [float(x[2]) for x in rota if x[7] != "Avião" and x[1] != "Eucatur"]
+    d_precxdata = [float(x[2]) for x in rota if x[7] != "Aviao" and x[1] != "Eucatur"]
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.boxplot(d_precxdata)
     if len([float(x[2]) for x in rota if x[1] == "Eucatur"]) > 0:
@@ -184,7 +184,7 @@ if st.button('Buscar'):
     metricasConcorrencia(rota)
     TabelaDados(rota)
 
-    d_precxdata = [[float(y[2]) for y in rota if y[0] == x and y[7] != "Avião" and y[1] != "Eucatur"] for x in lisDatas1]
+    d_precxdata = [[float(y[2]) for y in rota if y[0] == x and y[7] != "Aviao" and y[1] != "Eucatur"] for x in lisDatas1]
 
     fig, ax = plt.subplots(figsize = (10,6))
     ax.boxplot(d_precxdata, labels = lisDatas)
