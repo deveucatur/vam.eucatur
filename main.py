@@ -159,9 +159,9 @@ col1, col2, col3 = st.columns(3)
 with col2:
     image3 = Image.open('AdN.png')
     st.image(image3,width=200,)
-    #st.caption("Developed by Gabriel e Rodrigo")
-    #st.caption("Todos os direitos reservados")
 
-titleFinal = """<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" type="text/css" id="u0" href="https://pt.rakko.tools/tools/129/lib/tinymce/skins/ui/oxide/content.min.css"><link rel="stylesheet" type="text/css" id="u1" href="https://pt.rakko.tools/tools/129/lib/tinymce/skins/content/default/content.min.css"></head><body id="tinymce" class="mce-content-body " data-id="content" contenteditable="true" spellcheck="false"><div class="element-container css-zvqkad e1tzin5v3" data-stale="false"><div class="stMarkdown"><div class="css-rvekum e16nr0p34" data-testid="stCaptionContainer"><p style="text-align: center;" data-mce-style="text-align: center;"><strong>Developed by</strong> Gabriel e Rodrigo</p></div></div></div><div class="element-container css-zvqkad e1tzin5v3" data-stale="false"><div class="stMarkdown"><div class="css-rvekum e16nr0p34" data-testid="stCaptionContainer"><p style="text-align: center;" data-mce-style="text-align: center;">Todos os direitos reservados</p></div></div></div><p style="text-align: center;" data-mce-style="text-align: center;">© 1964-2022 - v1 - <span style="color: rgb(224, 62, 45);" data-mce-style="color: #e03e2d;"><strong>EUCATUR</strong> </span>- <strong><span style="color: rgb(22, 145, 121);" data-mce-style="color: #169179;">Empresa União Cascavel de Transportes e Turismo</span></strong></p></body></html>"""
+st.caption("<h4 style='text-align: center; color: gray;'>Developed by Gabriel e Rodrigo</h2>", unsafe_allow_html=True)
+st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
+st.caption("<h4 style='text-align: center; color: black;'>© 1964-2022 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>", unsafe_allow_html=True)
 
-st.caption(titleFinal,unsafe_allow_html = True)
+
