@@ -61,10 +61,15 @@ def expliGraf():
                         O diagrama identifica onde estão localizados 50% dos valores mais prováveis, a mediana e os valores extremos.
                         
                         OUTLIER – Valores discrepantes ou extremos se comparado com outros.
+                        
                         MÁXIMO - Maior valor encontrado. (exceto Outliers)
+                        
                         MÍNIMO - Menor valor encotrado. (exceto Outliers)
+                        
                         TERCEIRO QUARTIL - A terceira linha de cima para baixo do retângulo central.
+                        
                         SEGUNDA QUARTIL OU MEDIANA - Segunda linha de cima para baixo do retângulo central.
+                        
                         PRIMEIRO QUARTIL - Primeira linha de cima para baixo do retângulo central.
                     """)
 
@@ -75,7 +80,7 @@ def expliGraf():
             st.write("""
                 GRÁFICO VIOLINO
             
-                Os gráficos de violino são semelhantes aos gráficos de caixa, exceto que eles também mostram a densidade de probabilidade dos dados em valores diferentes, geralmente suavizados por um estimador de densidade do kernel.
+                Os gráficos de violino são semelhantes aos gráficos box plot, exceto que eles também mostram a densidade de probabilidade dos dados em valores diferentes, geralmente suavizados por um estimador de densidade do kernel.
                 
                 FUNCIONALIDADE:
                 É avaliado onde está localizado os preços da EUCATUR com o volume da direita para a esquerda do gráfico.
