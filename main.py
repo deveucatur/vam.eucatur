@@ -47,6 +47,46 @@ def TabelaDados(rota):
     df = pd.DataFrame(rota, columns=["Data", 'Empresa', "Preço", "Saída", "Chegada", "Tipo de Leito", "Assentos livres","Tipo"])
     st.dataframe(df, use_container_width=True)
 
+def expliGraf():
+    
+    with st.expander("Ver explicação do gráfico"):
+        col1, col2 = st.columns(2)
+        with col1:
+            st.header("CONCORRÊNCIA")
+            imag_BOX = Image.open("BOXPLOT1.jpg")
+            st.image(imag_BOX, width=315)
+            st.write("""
+                        GRÁFICO BOX PLOT
+                        
+                        OUTLIER – Valores discrepantes ou extremos se comparado com outros.
+                        
+                        MÁXIMO - Maior valor encontrado. (exceto Outliers)
+                        
+                        MÍNIMO - Menor valor encotrado. (exceto Outliers)
+                        
+                        TERCEIRO QUARTIL - A terceira linha de cima para baixo do retângulo central.
+                        
+                        SEGUNDA QUARTIL OU MEDIANA - Segunda linha de cima para baixo do retângulo central.
+                        
+                        PRIMEIRO QUARTIL - Primeira linha de cima para baixo do retângulo central.
+                    """)
+
+        with col2:
+            st.header("EUCATUR")
+            imag_VIOLI = Image.open("VIOLION1.png")
+            st.image(imag_VIOLI, width=315)
+            st.write("""
+                GRÁFICO VIOLINO
+            
+                Representado por figuras azuis por cima do gráfico BOX PLOT.
+                
+                
+                FUNCIONALIDADE:
+                É avaliado onde está localizado os preços da EUCATUR com o volume da direita para a esquerda do gráfico.
+                Quanto maior o volume,  maior ali a localização de valores naquele dia.
+                
+                
+            """)
 
 
 ################## Cod do front ############################
@@ -58,7 +98,7 @@ st.set_page_config(
     layout="centered")
 
 image = Image.open('logo.png')
-st.image(image,width=250,)
+st.image(image,width=250)
 
 st.title('VAM - Análise de Concorrência')
 
@@ -108,6 +148,8 @@ if st.button('Buscar'):
             pass
 
     st.pyplot(fig)
+    
+    expliGraf()
 
     st.header("Dados por dia ")
 
@@ -160,7 +202,7 @@ with col2:
     image3 = Image.open('AdN.png')
     st.image(image3,width=200,)
 
-#st.caption("<h4 style='text-align: center; color: gray;'>Developed by Gabriel e Rodrigo</h2>", unsafe_allow_html=True)
+st.caption("<h4 style='text-align: center; color: gray;'>Developed by Gabriel e Rodrigo</h2>", unsafe_allow_html=True)
 st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
 st.caption("<h4 style='text-align: center; color: black;'>© 1964-2022 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>", unsafe_allow_html=True)
 
