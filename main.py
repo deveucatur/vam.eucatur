@@ -16,7 +16,7 @@ def plotarGrafComp(rota):
     if len([float(x[2]) for x in rota if x[1] == "Eucatur"]) > 0:
         try:
             d_precxdataEucatur = [float(x[2]) for x in rota if x[1] == "Eucatur"]
-            ax.violinplot(d_precxdataEucatur, widths=0.25)
+            ax.violinplot(d_precxdataEucatur, widths=0.125)
             st.markdown("**Eucatur vs Concorrência**")
         except ValueError:  
             pass
@@ -110,6 +110,10 @@ with open("dadosConcorrencia.json", "r") as json_file:
 col1, col2, col3 = st.columns(3)
 with col1:
     treRotas = st.selectbox( "Selecione a Rota", [x for x in dados.keys()])
+
+    
+
+
 with col2:
     print("")
 
@@ -117,16 +121,34 @@ with col3:
     date = st.date_input(
     "Data",  datetime.date.today())
 
+data1 = str(date)
+ano = data1[0:4]
+mes = data1[5:7]
+dia = data1[8:10]
+
+lisDatas = [str(datetime.date(int(ano),int(mes),int(dia)) + datetime.timedelta(days= x))  for x in range(5)]
+
+Empresa_list = sorted(set([x[:8][1] for x in dados[treRotas] if x[0] in lisDatas]))
+options_Empresa = st.multiselect('Selecione as empresas', Empresa_list, Empresa_list)
+
+Leito_list = sorted(set([x[:8][5] for x in dados[treRotas] if x[0] in lisDatas and x[1] in options_Empresa]))
+options_Leito = st.multiselect('Tipo de Leito', Leito_list, Leito_list)
+
+horarios_list = sorted(set([x[:8][3] for x in dados[treRotas] if x[0] in lisDatas]))
+
+options_horario_ini,options_horario_fin = st.select_slider('Horario', options = horarios_list, value = (horarios_list[0],horarios_list[-1]))
+
 if st.button('Buscar'):
 
-    data1 = str(date)
-    ano = data1[0:4]
-    mes = data1[5:7]
-    dia = data1[8:10]
 
-    lisDatas = [str(datetime.date(int(ano),int(mes),int(dia)) + datetime.timedelta(days= x))  for x in range(5)]
 
-    rota = [x[:8] for x in dados[treRotas] if x[0] in lisDatas]
+    rota = [x[:8] for x in dados[treRotas] if x[0] in lisDatas and 
+            x[1] in options_Empresa and 
+            x[5] in options_Leito and
+            x[3] in [x for x in horarios_list if x >= options_horario_ini and x <=options_horario_fin]
+            ]
+
+
 
     st.header(f"Dados de {lisDatas[0]} até {lisDatas[-1]}")
 
@@ -205,5 +227,4 @@ with col2:
 
 st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
 st.caption("<h4 style='text-align: center; color: black;'>© 1964-2022 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>", unsafe_allow_html=True)
-
 
