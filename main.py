@@ -134,7 +134,7 @@ options_Empresa = st.multiselect('Selecione as empresas', Empresa_list, Empresa_
 Leito_list = sorted(set([x[:8][5] for x in dados[treRotas] if x[0] in lisDatas and x[1] in options_Empresa]))
 options_Leito = st.multiselect('Tipo de Leito', Leito_list, Leito_list)
 
-horarios_list = sorted(set([x[:8][3] for x in dados[treRotas] if x[0] in lisDatas]))
+horarios_list = sorted(set([x[:8][3] for x in dados[treRotas] if x[0] in lisDatas and x[1] in options_Empresa and x[5] in options_Leito]))
 
 options_horario_ini,options_horario_fin = st.select_slider('Horario', options = horarios_list, value = (horarios_list[0],horarios_list[-1]))
 
