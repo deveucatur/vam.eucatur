@@ -94,7 +94,7 @@ def expliGraf():
 
 icone = Image.open('icone.png')
 st.set_page_config(
-    page_title="VAM EUCATUR",
+    page_title="VAM - Visualização de Analise de Mercado",
     page_icon=icone,
     layout="centered")
 
