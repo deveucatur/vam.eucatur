@@ -94,14 +94,14 @@ def expliGraf():
 
 icone = Image.open('icone.png')
 st.set_page_config(
-    page_title="VAM - Visualização de Analise de Mercado",
+    page_title="VAM - Visualização de Análise de Mercado",
     page_icon=icone,
     layout="centered")
 
 image = Image.open('logo.png')
 st.image(image,width=250)
 
-st.title('Visualização de Analise de Mercado')
+st.title('Visualização de Análise de Mercado')
 
 with open("dadosConcorrencia.json", "r") as json_file:    
     dados = json.load(json_file)
