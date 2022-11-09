@@ -101,7 +101,7 @@ st.set_page_config(
 image = Image.open('logo.png')
 st.image(image,width=250)
 
-st.title('VAM - Visualização de Analise de Mercado')
+st.title('Visualização de Analise de Mercado')
 
 with open("dadosConcorrencia.json", "r") as json_file:    
     dados = json.load(json_file)
