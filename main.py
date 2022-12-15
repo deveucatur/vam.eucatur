@@ -94,14 +94,14 @@ def expliGraf():
 
 icone = Image.open('icone.png')
 st.set_page_config(
-    page_title="VAM - Visualização de Análise de Mercado",
+    page_title="VAM EUCATUR",
     page_icon=icone,
     layout="centered")
 
 image = Image.open('logo.png')
 st.image(image,width=250)
 
-st.title('Visualização de Análise de Mercado')
+st.title('VAM - Análise de Concorrência')
 
 with open("dadosConcorrencia.json", "r") as json_file:    
     dados = json.load(json_file)
@@ -110,9 +110,6 @@ with open("dadosConcorrencia.json", "r") as json_file:
 col1, col2, col3 = st.columns(3)
 with col1:
     treRotas = st.selectbox( "Selecione a Rota", [x for x in dados.keys()])
-
-    
-
 
 with col2:
     print("")
@@ -145,7 +142,7 @@ if st.button('Buscar'):
     rota = [x[:8] for x in dados[treRotas] if x[0] in lisDatas and 
             x[1] in options_Empresa and 
             x[5] in options_Leito and
-            x[3] in [x for x in horarios_list if x >= options_horario_ini and x <=options_horario_fin]
+            x[3] in [ x for x in horarios_list if x >= options_horario_ini and x <= options_horario_fin ]
             ]
 
 
