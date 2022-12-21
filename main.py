@@ -64,30 +64,32 @@ Solicite aqui mais rotas.''')
             origem_dados.append(origem_user.upper())
             destino_dados.append(destino_user.upper())
             st.markdown(f'Encaminhada a solicitação de inclusão da rota {origem_user} x {destino_user}.')
+            
+            for_json = {}
+            for_json['Origem'] = origem_dados
+            for_json['Destino'] = destino_dados
+            with open('ROTAS.json', 'w') as myjson:
+                json.dump(for_json, myjson, indent=4)
+                
         elif origem_user == destino_user:
             st.markdown('Origem e Destino não podem ser iguais.')
         else:
             st.markdown('Rota já inclusa ao VAM.')
 
 
-for_json = {}
-for_json['Origem'] = origem_dados
-for_json['Destino'] = destino_dados
 
-with open('ROTAS.json', 'w') as myjson:
-    json.dump(for_json, myjson, indent=4)
 
     
-    col1, col2, col3 = st.columns(3)
+        col1, col2, col3 = st.columns(3)
 
-    with col2:
-        image3 = Image.open('AdN.png')
-        st.image(image3, width=200, )
+        with col2:
+            image3 = Image.open('AdN.png')
+            st.image(image3, width=200, )
 
-    st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
-    st.caption(
-            "<h4 style='text-align: center; color: black;'>© 1964-2022 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>",
-            unsafe_allow_html=True)
+        st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
+        st.caption(
+                "<h4 style='text-align: center; color: black;'>© 1964-2022 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>",
+                unsafe_allow_html=True)
     
     
 if add_radio == 'VAM':
