@@ -42,10 +42,10 @@ Solicite aqui mais rotas.''')
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        origem_user = st.selectbox('ORIGEM', [x for x in dic_cidades['Cidades']],"Selecione uma cidade")
+        origem_user = st.selectbox('ORIGEM', [x for x in dic_cidades['Cidades']])
 
     with col2:
-        destino_user = st.selectbox('DESTINO', [a for a in dic_cidades['Cidades']], "Selecione uma cidade")
+        destino_user = st.selectbox('DESTINO', [a for a in dic_cidades['Cidades']])
 
     with col3:
         st.text("")
