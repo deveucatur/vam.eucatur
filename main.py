@@ -299,9 +299,9 @@ if add_radio == 'VAM':
 
     col1, col2, col3 = st.columns(3)
 
-    with col2:
-        image3 = Image.open('AdN.png')
-        st.image(image3, width=200, )
+    #with col2:
+        #image3 = Image.open('AdN.png')
+        #st.image(image3, width=200, )
 
     st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
     st.caption(
