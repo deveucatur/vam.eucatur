@@ -186,7 +186,7 @@ if add_radio == 'VAM':
 
     st.title('Visualização de Análise de Mercado')
 
-    with open("dadosConcorrencia.json", "r") as json_file:
+    with open("dadosConcorrencia03-02.json", "r") as json_file:
         dados = json.load(json_file)
 
     col1, col2, col3 = st.columns(3)
