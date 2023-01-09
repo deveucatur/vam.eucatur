@@ -12,22 +12,28 @@ st.set_page_config(
     page_icon=icone,
     layout="centered")
 
-with open('ROTAS.json', 'r') as rotas:
+with open('ROTASBuscaO.json', 'r') as rotas:
     dados = json.load(rotas)
 
-origem_dados = [r for r in dados['Origem']]
-destino_dados = [x for x in dados['Destino']]
+with open('ROTASBuscaO.json','r') as busca:
+    BuscaOnibusRotas = json.load(busca)
 
-with open('CidadeBrasil.json','r') as dado:
+with open('CidadeBrasil.json', 'r') as dado:
     dic_cidades = json.load(dado)
+
+estados = [x for x in dic_cidades['Estados']]
+origemBuscaO = [b for b in BuscaOnibusRotas['Origem']]
+destinoBuscaO = [a for a in BuscaOnibusRotas['Destino']]
+origemClica = [r for r in dados['Origem']]
+destinoClica = [x for x in dados['Destino']]
+
 
 with st.sidebar:
     st.title('MAIS OPÇÕES')
 
     add_radio = st.radio('Escolha um metodo',
-        ("VAM", "Inclusão de rotas")
-    )
-
+                         ("VAM", "Inclusão de rotas")
+                         )
 
 if add_radio == 'Inclusão de rotas':
 
@@ -39,48 +45,63 @@ if add_radio == 'Inclusão de rotas':
     st.subheader('''Nos ajude com o aprimoriamento do VAM!
 Solicite aqui mais rotas.''')
     st.text('')
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
 
     with col1:
-        origem_user = st.selectbox('ORIGEM', [x for x in dic_cidades['Cidades']])
-
-    with col2:
-        destino_user = st.selectbox('DESTINO', [a for a in dic_cidades['Cidades']])
-
-    with col3:
+        origem_user = st.selectbox('CIDADE ORIGEM', [x for x in dic_cidades['Cidades']])
+        st.text('')
+        destino_user = st.selectbox('CIDADE DESTINO', [a for a in dic_cidades['Cidades']])
         st.text("")
         st.text("")
         button_lets = st.button('ENVIAR')
 
+    with col2:
+        ESTADorigem = st.selectbox('ESTADO ORIGEM', [a for a in dic_cidades['Estados']])
+        st.text('')
+        ESTADestino = st.selectbox('ESTADO DESTINO', [b for b in estados])
+
     if button_lets:
 
-        print(origem_dados)
-        print(destino_dados)
+        print(origemClica)
+        print(destinoClica)
 
-        ListaRotas = [f'{str(origem_dados[a]).upper()} - {str(destino_dados[a]).upper()}' for a in range(len(origem_dados))]
+        ListaRotas = [f'{str(origemBuscaO[a]).upper()} - {str(destinoBuscaO[a]).upper()}' for a in
+                      range(len(origemBuscaO))]
         print(ListaRotas)
 
         if f'{str(origem_user).upper()} - {str(destino_user).upper()}' not in ListaRotas:
-            origem_dados.append(origem_user.upper())
-            destino_dados.append(destino_user.upper())
+            origemClica.append(f'{origem_user} {ESTADorigem}')
+            destinoClica.append(f'{destino_user} {ESTADestino}')
+            origemBuscaO.append(origem_user)
+            destinoBuscaO.append(destino_user)
             st.markdown(f'Encaminhada a solicitação de inclusão da rota {origem_user} x {destino_user}.')
-            
-            for_json = {}
-            for_json['Origem'] = origem_dados
-            for_json['Destino'] = destino_dados
-            with open('ROTAS.json', 'w') as myjson:
-                json.dump(for_json, myjson, indent=4)
-                
+
+            jsonClica = {}
+            jsonBusca = {}
+            jsonClica['Origem'] = origemClica
+            jsonClica['Destino'] = destinoClica
+            jsonBusca['Origem'] = origemBuscaO
+            jsonBusca['Destino'] = destinoBuscaO
+
+            with open('ROTASClickBuss.json', 'w') as myjson:
+                json.dump(jsonClica, myjson, indent=4)
+            with open('ROTASBuscaO.json','w') as mybus:
+                json.dump(jsonBusca, mybus, indent=4)
+
         elif origem_user == destino_user:
             st.markdown('Origem e Destino não podem ser iguais.')
         else:
             st.markdown('Rota já inclusa ao VAM.')
 
+    st.text("")
+    st.text("")
+    st.text("")
+    st.text("")
     st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
-    st.caption("<h4 style='text-align: center; color: black;'>© 1964-2022 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>",
-                unsafe_allow_html=True)
-    
-    
+    st.caption(
+        "<h4 style='text-align: center; color: black;'>© 1964-2022 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>",
+        unsafe_allow_html=True)
+
 if add_radio == 'VAM':
     def plotarGrafComp(rota):
         d_precxdata = [float(x[2]) for x in rota if x[7] != "Aviao" and x[1] != "Eucatur"]
@@ -180,13 +201,12 @@ if add_radio == 'VAM':
 
     ################## Cod do front ############################
 
-
     image = Image.open('logo.png')
     st.image(image, width=250)
 
     st.title('Visualização de Análise de Mercado')
 
-    with open("dadosConcorrencia03-02.json", "r") as json_file:
+    with open("OfertasConcatenadas.json", "r") as json_file:
         dados = json.load(json_file)
 
     col1, col2, col3 = st.columns(3)
@@ -217,8 +237,10 @@ if add_radio == 'VAM':
         set([x[:8][3] for x in dados[treRotas] if
              x[0] in lisDatas and x[1] in options_Empresa and x[5] in options_Leito]))
 
-    options_horario_ini, options_horario_fin = st.select_slider('Horario', options=horarios_list,
-                                                                value=(horarios_list[0], horarios_list[-1]))
+    try:
+        options_horario_ini, options_horario_fin = st.select_slider('Horario', options=horarios_list,  value=(horarios_list[0], horarios_list[-1]))
+    except:
+        st.text("Não existe nenhuma informação referente a essa rota.")
 
     if st.button('Buscar'):
 
@@ -299,9 +321,9 @@ if add_radio == 'VAM':
 
     col1, col2, col3 = st.columns(3)
 
-    #with col2:
-        #image3 = Image.open('AdN.png')
-        #st.image(image3, width=200, )
+    # with col2:
+    # image3 = Image.open('AdN.png')
+    # st.image(image3, width=200, )
 
     st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
     st.caption(
