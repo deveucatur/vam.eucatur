@@ -209,12 +209,9 @@ if add_radio == 'VAM':
     with open("OfertasConcatenadas.json", "r") as json_file:
         dados = json.load(json_file)
 
-    col1, col2, col3 = st.columns(3)
+    col1,col3 = st.columns((2,1))
     with col1:
         treRotas = st.selectbox("Selecione a Rota", [x for x in dados.keys()])
-
-    with col2:
-        print("")
 
     with col3:
         date = st.date_input(
