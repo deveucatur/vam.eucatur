@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import streamlit as st
 import json
+import mysql.connector
 
 icone = Image.open('icone.png')
 st.set_page_config(
@@ -12,20 +13,25 @@ st.set_page_config(
     page_icon=icone,
     layout="centered")
 
-with open('ROTASBuscaO.json', 'r') as rotas:
-    dados = json.load(rotas)
+conexao = mysql.connector.connect(
+            host='database-2.cwv7wd2g4l5m.sa-east-1.rds.amazonaws.com',
+            user='root',
+            password='ArqProcess0s',
+            database='OFERTAS_CONCORRENTES')
+cursor = conexao.cursor()
 
-with open('ROTASBuscaO.json','r') as busca:
-    BuscaOnibusRotas = json.load(busca)
+comando = f'SELECT origem, destino  FROM ROTAS;'
+cursor.execute(comando)
+rotas = cursor.fetchall()
+
+cursor.close()
+conexao.close()
+
+
+ListaRotas = [f'{x[0]} - {x[1]}'.upper() for x in rotas]
 
 with open('CidadeBrasil.json', 'r') as dado:
     dic_cidades = json.load(dado)
-
-estados = [x for x in dic_cidades['Estados']]
-origemBuscaO = [b for b in BuscaOnibusRotas['Origem']]
-destinoBuscaO = [a for a in BuscaOnibusRotas['Destino']]
-origemClica = [r for r in dados['Origem']]
-destinoClica = [x for x in dados['Destino']]
 
 
 with st.sidebar:
@@ -58,40 +64,33 @@ Solicite aqui mais rotas.''')
     with col2:
         ESTADorigem = st.selectbox('ESTADO ORIGEM', [a for a in dic_cidades['Estados']])
         st.text('')
-        ESTADestino = st.selectbox('ESTADO DESTINO', [b for b in estados])
+        ESTADestino = st.selectbox('ESTADO DESTINO', [b for b in dic_cidades['Estados']])
 
     if button_lets:
-
-        print(origemClica)
-        print(destinoClica)
-
-        ListaRotas = [f'{str(origemBuscaO[a]).upper()} - {str(destinoBuscaO[a]).upper()}' for a in
-                      range(len(origemBuscaO))]
+        print('ROTAS')
         print(ListaRotas)
 
-        if f'{str(origem_user).upper()} - {str(destino_user).upper()}' not in ListaRotas:
-            origemClica.append(f'{origem_user} {ESTADorigem}')
-            destinoClica.append(f'{destino_user} {ESTADestino}')
-            origemBuscaO.append(origem_user)
-            destinoBuscaO.append(destino_user)
-            st.markdown(f'Encaminhada a solicitação de inclusão da rota {origem_user} x {destino_user}.')
+        if f'{str(origem_user).upper()} - {str(destino_user).upper()}' not in ListaRotas and origem_user != destino_user:
+            st.markdown(f'Encaminhada a solicitação de inclusão da rota {origem_user} x {destino_user}. \nA sua rota estará inclusa na próxima atualização do VAM.')
 
-            jsonClica = {}
-            jsonBusca = {}
-            jsonClica['Origem'] = origemClica
-            jsonClica['Destino'] = destinoClica
-            jsonBusca['Origem'] = origemBuscaO
-            jsonBusca['Destino'] = destinoBuscaO
+            conexao = mysql.connector.connect(
+                host='database-2.cwv7wd2g4l5m.sa-east-1.rds.amazonaws.com',
+                user='root',
+                password='ArqProcess0s',
+                database='OFERTAS_CONCORRENTES')
+            cursor = conexao.cursor()
 
-            with open('ROTASClickBuss.json', 'w') as myjson:
-                json.dump(jsonClica, myjson, indent=4)
-            with open('ROTASBuscaO.json','w') as mybus:
-                json.dump(jsonBusca, mybus, indent=4)
+            comando = f'insert INTO ROTAS(origem, destino, estado_origem, estado_destino) VALUES ("{origem_user}","{destino_user}", "{ESTADorigem}", "{ESTADestino}");'
+            cursor.execute(comando)
+            conexao.commit()
+
+            cursor.close()
+            conexao.close()
 
         elif origem_user == destino_user:
             st.markdown('Origem e Destino não podem ser iguais.')
         else:
-            st.markdown('Rota já inclusa ao VAM.')
+            st.markdown('Rota já solicitada ou já inclusa ao VAM.')
 
     st.text("")
     st.text("")
@@ -206,12 +205,14 @@ if add_radio == 'VAM':
 
     st.title('Visualização de Análise de Mercado')
 
-    with open("OfertasConcatenadas.json", "r") as json_file:
-        dados = json.load(json_file)
 
-    col1,col3 = st.columns((2,1))
+
+    col1, col2, col3 = st.columns(3)
     with col1:
-        treRotas = st.selectbox("Selecione a Rota", [x for x in dados.keys()])
+        treRotas = st.selectbox("Selecione a Rota", ListaRotas)
+
+    with col2:
+        print("")
 
     with col3:
         date = st.date_input(
@@ -222,17 +223,35 @@ if add_radio == 'VAM':
     mes = data1[5:7]
     dia = data1[8:10]
 
+    data2 = str(date + datetime.timedelta(days=5))
+    ano2 = data2[0:4]
+    mes2 = data2[5:7]
+    dia2 = data2[8:10]
+
+    conexao = mysql.connector.connect(
+        host='database-2.cwv7wd2g4l5m.sa-east-1.rds.amazonaws.com',
+        user='root',
+        password='ArqProcess0s',
+        database='OFERTAS_CONCORRENTES')
+    cursor = conexao.cursor()
+
+    comando = f"SELECT * FROM OFERTAS WHERE (rota = '{treRotas}') AND (data_rota >= '{ano}-{mes}-{dia}') AND (data_rota <='{ano2}-{mes2}-{dia2}');"
+    cursor.execute(comando)
+    ofertas = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
     lisDatas = [str(datetime.date(int(ano), int(mes), int(dia)) + datetime.timedelta(days=x)) for x in range(5)]
 
-    Empresa_list = sorted(set([x[:8][1] for x in dados[treRotas] if x[0] in lisDatas]))
+    Empresa_list = sorted(set([x[1] for x in ofertas]))
     options_Empresa = st.multiselect('Selecione as empresas', Empresa_list, Empresa_list)
 
-    Leito_list = sorted(set([x[:8][5] for x in dados[treRotas] if x[0] in lisDatas and x[1] in options_Empresa]))
+    Leito_list = sorted(set([x[5] for x in ofertas if x[1] in options_Empresa]))
     options_Leito = st.multiselect('Tipo de Leito', Leito_list, Leito_list)
 
     horarios_list = sorted(
-        set([x[:8][3] for x in dados[treRotas] if
-             x[0] in lisDatas and x[1] in options_Empresa and x[5] in options_Leito]))
+        set([x[:8][3] for x in ofertas if x[1] in options_Empresa if x[5] in options_Leito]))
 
     try:
         options_horario_ini, options_horario_fin = st.select_slider('Horario', options=horarios_list,  value=(horarios_list[0], horarios_list[-1]))
@@ -241,11 +260,21 @@ if add_radio == 'VAM':
 
     if st.button('Buscar'):
 
-        rota = [x[:8] for x in dados[treRotas] if x[0] in lisDatas and
-                x[1] in options_Empresa and
-                x[5] in options_Leito and
-                x[3] in [x for x in horarios_list if x >= options_horario_ini and x <= options_horario_fin]
-                ]
+        rota = []
+        listaTemp = []
+        listaOfic = []
+
+        for a in ofertas:
+            if a[1] in options_Empresa and a[5] in options_Leito and a[3] in [x for x in horarios_list if x >= options_horario_ini and x <= options_horario_fin]:
+                for b in range(8):
+                    listaTemp.append(str(a[b]))
+                listaOfic = listaTemp.copy()
+                rota.append(listaOfic)
+            listaTemp.clear()
+
+        print(rota)
+
+
 
         st.header(f"Dados de {lisDatas[0]} até {lisDatas[-1]}")
 
@@ -262,7 +291,6 @@ if add_radio == 'VAM':
 
             try:
                 d_precxdataEucatur = [[float(y[2]) for y in rota if y[0] == x and y[1] == "Eucatur"] for x in lisDatas]
-                print(d_precxdataEucatur)
                 ax.violinplot(d_precxdataEucatur, widths=0.25)
                 st.markdown("**Eucatur vs Concorrência**")
             except ValueError:
@@ -324,7 +352,7 @@ if add_radio == 'VAM':
 
     st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
     st.caption(
-        "<h4 style='text-align: center; color: black;'>© 1964-2023 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>",
+        "<h4 style='text-align: center; color: black;'>© 1964-2022 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>",
         unsafe_allow_html=True)
 
 
