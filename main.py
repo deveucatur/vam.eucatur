@@ -7,7 +7,7 @@ import streamlit as st
 import json
 import mysql.connector
 
-icone = Image.open('imagens\icone.png')
+icone = Image.open('icone.png')
 st.set_page_config(
     page_title="VAM EUCATUR",
     page_icon=icone,
@@ -40,7 +40,7 @@ with st.sidebar:
                          )
 
 if add_radio == 'Inclusão de rotas':
-    image = Image.open('imagens\logo.png')
+    image = Image.open('logo.png')
 
     st.image(image, width=250)
 
@@ -161,7 +161,7 @@ if add_radio == 'VAM':
             col1, col2 = st.columns(2)
             with col1:
                 st.header("CONCORRÊNCIA")
-                imag_BOX = Image.open("imagens\BOXPLOT1.jpg")
+                imag_BOX = Image.open("BOXPLOT1.jpg")
                 st.image(imag_BOX, width=315)
                 st.write("""
                             GRÁFICO BOX PLOT
@@ -183,7 +183,7 @@ if add_radio == 'VAM':
 
             with col2:
                 st.header("EUCATUR")
-                imag_VIOLI = Image.open("imagens\VIOLION1.png")
+                imag_VIOLI = Image.open("VIOLION1.png")
                 st.image(imag_VIOLI, width=315)
                 st.write("""
                     GRÁFICO VIOLINO
@@ -205,7 +205,7 @@ if add_radio == 'VAM':
 
     ################## Cod do front ############################
 
-    image = Image.open('imagens\logo.png')
+    image = Image.open('logo.png')
     st.image(image, width=250)
 
     st.title('Visualização de Análise de Mercado')
