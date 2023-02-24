@@ -7,7 +7,7 @@ import streamlit as st
 import json
 import mysql.connector
 
-icone = Image.open('icone.png')
+icone = Image.open('imagens\icone.png')
 st.set_page_config(
     page_title="VAM EUCATUR",
     page_icon=icone,
@@ -40,55 +40,58 @@ with st.sidebar:
                          )
 
 if add_radio == 'Inclusão de rotas':
+    image = Image.open('imagens\logo.png')
 
-    image = Image.open('logo.png')
     st.image(image, width=250)
+
 
     st.title('INCLUSÃO DE ROTAS')
 
-    st.subheader('''Nos ajude com o aprimoriamento do VAM!
+    with st.form("my_form"): 
+        
+        st.subheader('''Nos ajude com o aprimoriamento do VAM!
 Solicite aqui mais rotas.''')
-    st.text('')
-    col1, col2 = st.columns(2)
-
-    with col1:
-        origem_user = st.selectbox('CIDADE ORIGEM', [x for x in dic_cidades['Cidades']])
         st.text('')
-        destino_user = st.selectbox('CIDADE DESTINO', [a for a in dic_cidades['Cidades']])
-        st.text("")
-        st.text("")
-        button_lets = st.button('ENVIAR')
+        col1, col2 = st.columns(2)
 
-    with col2:
-        ESTADorigem = st.selectbox('ESTADO ORIGEM', [a for a in dic_cidades['Estados']])
-        st.text('')
-        ESTADestino = st.selectbox('ESTADO DESTINO', [b for b in dic_cidades['Estados']])
+        with col1:
+            origem_user = st.selectbox('CIDADE ORIGEM', [x for x in dic_cidades['Cidades']])
+            st.text('')
+            destino_user = st.selectbox('CIDADE DESTINO', [a for a in dic_cidades['Cidades']])
+            st.text("")
+            st.text("")
 
-    if button_lets:
-        print('ROTAS')
-        print(ListaRotas)
+        with col2:
+            ESTADorigem = st.selectbox('ESTADO ORIGEM', [a for a in dic_cidades['Estados']])
+            st.text('')
+            ESTADestino = st.selectbox('ESTADO DESTINO', [b for b in dic_cidades['Estados']])
 
-        if f'{str(origem_user).upper()} - {str(destino_user).upper()}' not in ListaRotas and origem_user != destino_user:
-            st.markdown(f'Encaminhada a solicitação de inclusão da rota {origem_user} x {destino_user}. \nA sua rota estará inclusa na próxima atualização do VAM.')
+        submitted = st.form_submit_button("ENVIAR")
+        if submitted:
+            print('ROTAS')
+            print(ListaRotas)
 
-            conexao = mysql.connector.connect(
-                host='database-2.cwv7wd2g4l5m.sa-east-1.rds.amazonaws.com',
-                user='root',
-                password='ArqProcess0s',
-                database='OFERTAS_CONCORRENTES')
-            cursor = conexao.cursor()
+            if f'{str(origem_user).upper()} - {str(destino_user).upper()}' not in ListaRotas and origem_user != destino_user:
+                st.markdown(f'Encaminhada a solicitação de inclusão da rota {origem_user} x {destino_user}. \nA sua rota estará inclusa na próxima atualização do VAM.')
 
-            comando = f'insert INTO ROTAS(origem, destino, estado_origem, estado_destino) VALUES ("{origem_user}","{destino_user}", "{ESTADorigem}", "{ESTADestino}");'
-            cursor.execute(comando)
-            conexao.commit()
+                conexao = mysql.connector.connect(
+                    host='database-2.cwv7wd2g4l5m.sa-east-1.rds.amazonaws.com',
+                    user='root',
+                    password='ArqProcess0s',
+                    database='OFERTAS_CONCORRENTES')
+                cursor = conexao.cursor()
 
-            cursor.close()
-            conexao.close()
+                comando = f'insert INTO ROTAS(origem, destino, estado_origem, estado_destino) VALUES ("{origem_user}","{destino_user}", "{ESTADorigem}", "{ESTADestino}");'
+                cursor.execute(comando)
+                conexao.commit()
 
-        elif origem_user == destino_user:
-            st.markdown('Origem e Destino não podem ser iguais.')
-        else:
-            st.markdown('Rota já solicitada ou já inclusa ao VAM.')
+                cursor.close()
+                conexao.close()
+
+            elif origem_user == destino_user:
+                st.markdown('Origem e Destino não podem ser iguais.')
+            else:
+                st.markdown('Rota já solicitada ou já inclusa ao VAM.')
 
     st.text("")
     st.text("")
@@ -96,8 +99,8 @@ Solicite aqui mais rotas.''')
     st.text("")
     st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
     st.caption(
-        "<h4 style='text-align: center; color: black;'>© 1964-2022 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>",
-        unsafe_allow_html=True)
+            "<h4 style='text-align: center; color: black;'>© 1964-2022 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>",
+            unsafe_allow_html=True)
 
 if add_radio == 'VAM':
     def plotarGrafComp(rota):
@@ -158,7 +161,7 @@ if add_radio == 'VAM':
             col1, col2 = st.columns(2)
             with col1:
                 st.header("CONCORRÊNCIA")
-                imag_BOX = Image.open("BOXPLOT1.jpg")
+                imag_BOX = Image.open("imagens\BOXPLOT1.jpg")
                 st.image(imag_BOX, width=315)
                 st.write("""
                             GRÁFICO BOX PLOT
@@ -180,7 +183,7 @@ if add_radio == 'VAM':
 
             with col2:
                 st.header("EUCATUR")
-                imag_VIOLI = Image.open("VIOLION1.png")
+                imag_VIOLI = Image.open("imagens\VIOLION1.png")
                 st.image(imag_VIOLI, width=315)
                 st.write("""
                     GRÁFICO VIOLINO
@@ -195,16 +198,19 @@ if add_radio == 'VAM':
                 """)
 
 
+    def comer2digtHoras(hora):
+        var = hora[:-3]
+        return var
+
+
     ################## Cod do front ############################
 
-    image = Image.open('logo.png')
+    image = Image.open('imagens\logo.png')
     st.image(image, width=250)
 
     st.title('Visualização de Análise de Mercado')
 
-    def comer2digtHoras(hora):
-        var = hora[:-3]
-        return var
+    
 
 
     col1, col2, col3 = st.columns(3)
@@ -228,150 +234,122 @@ if add_radio == 'VAM':
     mes2 = data2[5:7]
     dia2 = data2[8:10]
 
+    with st.form("my_form1"): 
+        lisDatas = [str(datetime.date(int(ano), int(mes), int(dia)) + datetime.timedelta(days=x)) for x in range(5)]
+        try:
+            comandaEmpresa = f'SELECT DISTINCT empresa, tipo_leito, hr_saida, hr_chegada FROM OFERTAS WHERE (rota = "{treRotas}") AND (data_rota >= "{ano}-{mes}-{dia}") AND (data_rota <= "{ano2}-{mes2}-{dia2}");'
+            cursor.execute(comandaEmpresa)
+            empresasBD = cursor.fetchall()
 
-    lisDatas = [str(datetime.date(int(ano), int(mes), int(dia)) + datetime.timedelta(days=x)) for x in range(5)]
+            Empresa_list = sorted(set(str(x[0]) for x in empresasBD))
+            options_Empresa = st.multiselect('Selecione as empresas', Empresa_list, Empresa_list)
 
-    comandaEmpresa = f'SELECT DISTINCT empresa FROM OFERTAS WHERE (rota = "{treRotas}") AND (data_rota >= "{ano}-{mes}-{dia}") AND (data_rota <= "{ano2}-{mes2}-{dia2}");'
-    cursor.execute(comandaEmpresa)
-    empresaBD = cursor.fetchall()
+            leito_list = sorted(set([str(x[1]) for x in empresasBD]))
+            options_Leito = st.multiselect('Tipo de Leito', leito_list, leito_list)
 
-    Empresa_list = sorted(set(str(x[0]) for x in empresaBD))
-    options_Empresa = st.multiselect('Selecione as empresas', Empresa_list, Empresa_list)
+            #horarios_list1 = [str(x[2]) for x in empresasBD]
+            #horarios_list2 = [str(x[3]) for x in empresasBD]
+            #horarios_list = sorted(set(horarios_list1 + horarios_list2))
+            
+            #options_horario_ini, options_horario_fin = st.select_slider('Horario', options=horarios_list,  value=(horarios_list[0], horarios_list[-1]))
+        except:
+            st.text("Não existe nenhuma informação referente a essa rota.")
+        
 
-    leitoBD = []
-    for a in options_Empresa:
-        ComandoLeito = f'SELECT DISTINCT tipo_leito FROM OFERTAS WHERE (empresa = "{a}") AND (rota = "{treRotas}") AND (data_rota >= "{ano}-{mes}-{dia}") AND (data_rota <= "{ano2}-{mes2}-{dia2}");'
-        cursor.execute(ComandoLeito)
-        leitos = cursor.fetchall()
+        botao = st.form_submit_button("PROCURAR")
+        if botao:
+            rota = []
+            listaTemp = []
+            listaOfic = []
 
-        leitoBD.append(leitos)
+            lista_Ofertas = []
+            for a in options_Empresa:
+                for b in options_Leito:
+                    comandoOfertas = f'SELECT data_rota, empresa, valor, hr_saida, hr_chegada, tipo_leito, tipo_transpot FROM OFERTAS WHERE (empresa = "{a}") AND (tipo_leito = "{b}") AND (data_rota >= "{ano}-{mes}-{dia}") AND (data_rota <= "{ano2}-{mes2}-{dia2}") AND (rota = "{treRotas}");'
+                    cursor.execute(comandoOfertas)
+                    var = cursor.fetchall()
 
+                    for info in range(len(var)):
+                        list_temp = []
+                        for vari in var[info]:
+                            list_temp.append(str(vari))
+                            lista_Ofertas.append(list_temp)
 
-    leito_list = []
-
-    for a in range(len(leitoBD)):
-        for b in leitoBD[a]:
-            if b[0] not in leito_list:
-                leito_list.append(str(b[0]))
-
-
-    options_Leito = st.multiselect('Tipo de Leito', leito_list, leito_list)
-
-    horasBD = []
-    for e in options_Empresa:
-        for c in options_Leito:
-            comandoHoras = f'SELECT DISTINCT hr_saida FROM OFERTAS WHERE (empresa ="{e}") AND (tipo_leito = "{c}") AND (data_rota >= "{ano}-{mes}-{dia}") AND (data_rota <= "{ano2}-{mes2}-{dia2}") AND (rota = "{treRotas}");'
-            cursor.execute(comandoHoras)
-            Horas = cursor.fetchall()
-            horasBD.append(Horas)
-
-    horasfilter = []
-    for a in range(len(horasBD)):
-        for b in horasBD[a]:
-            if b[0] not in horasfilter:
-                horasfilter.append(b[0])
-
-    horarios_list = sorted(set([comer2digtHoras(str(x)) for x in horasfilter]))
-
-    try:
-        options_horario_ini, options_horario_fin = st.select_slider('Horario', options=horarios_list,  value=(horarios_list[0], horarios_list[-1]))
-    except:
-        st.text("Não existe nenhuma informação referente a essa rota.")
-
-    if st.button('Buscar'):
-
-        rota = []
-        listaTemp = []
-        listaOfic = []
-
-        lista_Ofertas = []
-        for a in options_Empresa:
-            for b in options_Leito:
-                comandoOfertas = f'SELECT data_rota, empresa, valor, hr_saida, hr_chegada, tipo_leito, tipo_transpot FROM OFERTAS WHERE (empresa = "{a}") AND (tipo_leito = "{b}") AND (data_rota >= "{ano}-{mes}-{dia}") AND (data_rota <= "{ano2}-{mes2}-{dia2}") AND (rota = "{treRotas}");'
-                cursor.execute(comandoOfertas)
-                var = cursor.fetchall()
-
-                for info in range(len(var)):
-                    list_temp = []
-                    for vari in var[info]:
-                        list_temp.append(str(vari))
-                        lista_Ofertas.append(list_temp)
-
-        rota = []
-        for a in range(len(lista_Ofertas)):
-            if lista_Ofertas[a] not in rota:
-                rota.append(lista_Ofertas[a])
+            rota = []
+            for a in range(len(lista_Ofertas)):
+                if lista_Ofertas[a] not in rota:
+                    rota.append(lista_Ofertas[a])
 
 
-        st.header(f"Dados de {lisDatas[0]} até {lisDatas[-1]}")
+            st.header(f"Dados de {lisDatas[0]} até {lisDatas[-1]}")
 
-        metricasConcorrencia(rota)
-        TabelaDados(rota)
+            metricasConcorrencia(rota)
+            TabelaDados(rota)
 
-        d_precxdata = [[float(y[2]) for y in rota if y[0] == x and y[6] != "Aviao" and y[1] != "Eucatur"] for x in
-                       lisDatas]
+            d_precxdata = [[float(y[2]) for y in rota if y[0] == x and y[6] != "Aviao" and y[1] != "Eucatur"] for x in
+                        lisDatas]
 
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.boxplot(d_precxdata, labels=lisDatas)
+            fig, ax = plt.subplots(figsize=(10, 6))
+            ax.boxplot(d_precxdata, labels=lisDatas)
 
-        if len([float(x[2]) for x in rota if x[1] == "Eucatur"]) > 0:
+            if len([float(x[2]) for x in rota if x[1] == "Eucatur"]) > 0:
 
-            try:
-                d_precxdataEucatur = [[float(y[2]) for y in rota if y[0] == x and y[1] == "Eucatur"] for x in lisDatas]
-                ax.violinplot(d_precxdataEucatur, widths=0.25)
-                st.markdown("**Eucatur vs Concorrência**")
-            except ValueError:
-                pass
+                try:
+                    d_precxdataEucatur = [[float(y[2]) for y in rota if y[0] == x and y[1] == "Eucatur"] for x in lisDatas]
+                    ax.violinplot(d_precxdataEucatur, widths=0.25)
+                    st.markdown("**Eucatur vs Concorrência**")
+                except ValueError:
+                    pass
 
-        st.pyplot(fig)
+            st.pyplot(fig)
 
-        expliGraf()
+            expliGraf()
 
-        st.header("Dados por dia ")
+            st.header("Dados por dia ")
 
-        tab1, tab2, tab3, tab4, tab5 = st.tabs(lisDatas)
+            tab1, tab2, tab3, tab4, tab5 = st.tabs(lisDatas)
 
-        with tab1:
-            rota1 = [x for x in rota if x[0] == lisDatas[0]]
-            st.header(lisDatas[0])
+            with tab1:
+                rota1 = [x for x in rota if x[0] == lisDatas[0]]
+                st.header(lisDatas[0])
 
-            metricasConcorrencia(rota1)
-            TabelaDados(rota1)
-            plotarGrafComp(rota1)
+                metricasConcorrencia(rota1)
+                TabelaDados(rota1)
+                plotarGrafComp(rota1)
 
-        with tab2:
-            rota2 = [x for x in rota if x[0] == lisDatas[1]]
-            st.header(lisDatas[1])
+            with tab2:
+                rota2 = [x for x in rota if x[0] == lisDatas[1]]
+                st.header(lisDatas[1])
 
-            metricasConcorrencia(rota2)
-            TabelaDados(rota2)
-            plotarGrafComp(rota2)
+                metricasConcorrencia(rota2)
+                TabelaDados(rota2)
+                plotarGrafComp(rota2)
 
-        with tab3:
-            rota3 = [x for x in rota if x[0] == lisDatas[2]]
-            st.header(lisDatas[2])
+            with tab3:
+                rota3 = [x for x in rota if x[0] == lisDatas[2]]
+                st.header(lisDatas[2])
 
-            metricasConcorrencia(rota3)
-            TabelaDados(rota3)
-            plotarGrafComp(rota3)
+                metricasConcorrencia(rota3)
+                TabelaDados(rota3)
+                plotarGrafComp(rota3)
 
-        with tab4:
-            rota4 = [x for x in rota if x[0] == lisDatas[3]]
-            st.header(lisDatas[3])
+            with tab4:
+                rota4 = [x for x in rota if x[0] == lisDatas[3]]
+                st.header(lisDatas[3])
 
-            metricasConcorrencia(rota4)
-            TabelaDados(rota4)
-            plotarGrafComp(rota4)
+                metricasConcorrencia(rota4)
+                TabelaDados(rota4)
+                plotarGrafComp(rota4)
 
-        with tab5:
-            rota5 = [x for x in rota if x[0] == lisDatas[4]]
-            st.header(lisDatas[4])
+            with tab5:
+                rota5 = [x for x in rota if x[0] == lisDatas[4]]
+                st.header(lisDatas[4])
 
-            metricasConcorrencia(rota5)
-            TabelaDados(rota5)
-            plotarGrafComp(rota5)
+                metricasConcorrencia(rota5)
+                TabelaDados(rota5)
+                plotarGrafComp(rota5)
 
-    col1, col2, col3 = st.columns(3)
+        col1, col2, col3 = st.columns(3)
 
     # with col2:
     # image3 = Image.open('AdN.png')
