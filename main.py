@@ -11,22 +11,24 @@ icone = Image.open('icone.png')
 st.set_page_config(
     page_title="VAM EUCATUR",
     page_icon=icone,
-    layout="centered")
+    layout="wide")
 
 conexao = mysql.connector.connect(
-            host='database-2.cwv7wd2g4l5m.sa-east-1.rds.amazonaws.com',
-            user='root',
-            password='ArqProcess0s',
-            database='OFERTAS_CONCORRENTES')
+        passwd='nineboxeucatur',
+        port=3306,
+        user='ninebox',
+        host='nineboxeucatur.c7rugjkck183.sa-east-1.rds.amazonaws.com',
+        database='Vam-Eucatur'
+    )
+
 cursor = conexao.cursor()
 
-comando = f'SELECT rota FROM OFERTAS;'
+comando = f'SELECT origem, destino FROM ROTAS;'
 cursor.execute(comando)
 rotas = cursor.fetchall()
 
 
-
-ListaRotas = sorted(set(str(x[0]) for x in rotas))
+ListaRotas = list(set(f'{str(x[0]).strip()} - {str(x[1]).strip()}' for x in rotas))
 
 with open('CidadeBrasil.json', 'r') as dado:
     dic_cidades = json.load(dado)
@@ -68,8 +70,6 @@ Solicite aqui mais rotas.''')
 
         submitted = st.form_submit_button("ENVIAR")
         if submitted:
-            print('ROTAS')
-            print(ListaRotas)
 
             if f'{str(origem_user).upper()} - {str(destino_user).upper()}' not in ListaRotas and origem_user != destino_user:
                 st.markdown(f'Encaminhada a solicitação de inclusão da rota {origem_user} x {destino_user}. \nA sua rota estará inclusa na próxima atualização do VAM.')
@@ -118,7 +118,7 @@ if add_radio == 'VAM':
 
 
     def metricasConcorrencia(rota):
-        col1, col2, col3 = st.columns(3)
+        col1, colaux, col2, colaux1, col3 = st.columns(5)
 
         with col1:
             if len([float(x[2]) for x in rota if x[1] != "Eucatur"]) > 0:
@@ -238,6 +238,7 @@ if add_radio == 'VAM':
         lisDatas = [str(datetime.date(int(ano), int(mes), int(dia)) + datetime.timedelta(days=x)) for x in range(5)]
         try:
             comandaEmpresa = f'SELECT DISTINCT empresa, tipo_leito, hr_saida, hr_chegada FROM OFERTAS WHERE (rota = "{treRotas}") AND (data_rota >= "{ano}-{mes}-{dia}") AND (data_rota <= "{ano2}-{mes2}-{dia2}");'
+            
             cursor.execute(comandaEmpresa)
             empresasBD = cursor.fetchall()
 
@@ -289,7 +290,7 @@ if add_radio == 'VAM':
             d_precxdata = [[float(y[2]) for y in rota if y[0] == x and y[6] != "Aviao" and y[1] != "Eucatur"] for x in
                         lisDatas]
 
-            fig, ax = plt.subplots(figsize=(10, 6))
+            fig, ax = plt.subplots(figsize=(16, 12))
             ax.boxplot(d_precxdata, labels=lisDatas)
 
             if len([float(x[2]) for x in rota if x[1] == "Eucatur"]) > 0:
@@ -349,11 +350,6 @@ if add_radio == 'VAM':
                 TabelaDados(rota5)
                 plotarGrafComp(rota5)
 
-        col1, col2, col3 = st.columns(3)
-
-    # with col2:
-    # image3 = Image.open('AdN.png')
-    # st.image(image3, width=200, )
 
     st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
     st.caption(
