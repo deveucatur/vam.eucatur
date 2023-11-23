@@ -353,7 +353,7 @@ if add_radio == 'VAM':
 
     st.caption("<h4 style='text-align: center; color: gray;'>Todos os direitos reservados</h2>", unsafe_allow_html=True)
     st.caption(
-        "<h4 style='text-align: center; color: black;'>© 1964-2022 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>",
+        "<h4 style='text-align: center; color: black;'>© 1964-2023 - v1 - EUCATUR - Empresa União Cascavel de Transportes e Turismo</h2>",
         unsafe_allow_html=True)
 
 
