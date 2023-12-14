@@ -51,7 +51,7 @@ if add_radio == 'Inclusão de rotas':
 
     with st.form("my_form"): 
         
-        st.subheader('''Nos ajude com o aprimoriamento do VAM!
+        st.subheader('''Nos ajude com o aprimoramento do VAM!
 Solicite aqui mais rotas.''')
         st.text('')
         col1, col2 = st.columns(2)
